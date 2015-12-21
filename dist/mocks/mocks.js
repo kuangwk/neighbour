@@ -1,3 +1,4 @@
+// mocks data
 window.MOCKS = {
     hoods: [{
         id: 1,
@@ -39,8 +40,23 @@ window.MOCKS = {
         from_id: '1',
         type: 'priviate'
     }],
+    friends: [{
+        id: 5,
+        name: 'jiji'        
+    },{
+        id: 6,
+        name: 'hu'
+    }],
+    invitations: [{
+        id: 3,
+        name: 'jiji'
+    },{
+        id: 4,
+        name: 'tt'
+    }]
 };
 
+// mock ajax server
 $.mockjax({
   url: "/login",
   responseText: {
@@ -51,4 +67,23 @@ $.mockjax({
       email: 'q@qq.com'
     }
   }
+});
+
+$.mockjax({
+    url: "/delete-friend",
+    responseText: {
+        status: "success",
+    }
+});
+$.mockjax({
+    url: "/add-friend",
+    responseText: {
+        status: "success",
+    }
+});
+$.mockjax({
+    url: "/agree-friend",
+    responseText: {
+        status: "success",
+    }
 });
