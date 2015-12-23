@@ -1,21 +1,22 @@
 (function() {
     // listen events
-    var html_signup = template('signup');
+    var blocks = [1,2,3,4,5,6,7,8,9];
+
+    var html_signup = template('signup', {blocks: blocks});
     var html_login = template('login');
 
     $('.js-signin').on('click', function(e) {
         e.preventDefault();
         var formData = getAndCheckSigninData();
         formData && $.ajax({
-            url: '/login',
+            url: BaseUrl + '/session',
+            type: 'post',
             data: formData,
             success: function(data) {
-                console.log('success', data);
-                if (data.status === 'success') {
-                    setUserLogin(data.user);
-                } else {
-                    alert('email or password error')
-                }
+                setUserLogin(data);
+            },
+            error: function(data) {
+                alert(data.responseText);
             }
         })
         return false;
@@ -42,28 +43,35 @@
                 setUserLogin(data.user);
             },
             error: function(data) {
-                alert('signup error');
+                alert(data);
             }
         })
         return false;
     });
 
+    $('.js-select-block').on('click', function() {
+        var blockId = $(this).find('a').data('id');
+        var blockName = $(this).find('a').text();
+        $('#selected-block').text(blockName).attr('data-id', blockId);
+    })
+
     function getAndCheckSigninData(arguments) {
-        var email = getAndCheckEmail();
-        var password = email ? getAndCheckPassword(false) : false;
-        return (email && password) ? {
-            email: email,
+        var userName = getAdnCheckUsername();
+        var password = userName ? getAndCheckPassword(false) : false;
+        return (userName && password) ? {
+            u_name : userName,
             password: password
         } : false;
     }
 
     function getAndCheckSignupData() {
-        // var email = getAndCheckEmail();
         var userName = getAdnCheckUsername();
         var password = userName ? getAndCheckPassword(true) : false;
-        return (userName && password) ? {
+        var blockId = password ? getAndCheckBlockId() : false;
+        return (userName && password && blockId) ? {
             u_name: userName,
-            password: password
+            password: password,
+            block_id: blockId
         } : false;
     }
 
@@ -104,14 +112,18 @@
             alert('password not empty');
         }
         return password ? password : false
+    }
 
+    function getAndCheckBlockId() {
+        var blockId = $('#selected-block').data('id');
+        if (!blockId) {
+            alert('please selecte block');
+        }
+        return blockId ? blockId : false;
     }
 
     function setUserLogin(user) {
-        $.cookie('is_login', true);
-        $.cookie('user_name', user.user_name);
-        $.cookie('email', user.email);
-        location.href = '.';
+        location.href = './index.html';
     }
 
 })()

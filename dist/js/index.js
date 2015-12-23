@@ -1,29 +1,56 @@
 /* global template */
 (function() {
 
-var isLogin = $.cookie('is_login');
-
-if (!isLogin || isLogin === 'false') {
-  var html_login = template('login');
-  $('#main').html(html_login);
-  return;
-}
-
-window.UserInfo = {
-  nick: $.cookie('nick_name')
-}
-
-var html_header = template('header', UserInfo);
-
-$('#header').html(html_header);
-
-var html_hoods = template('hoods', {hoods: MOCKS.hoods});
-$('#main').html(html_hoods);
-
-// listen events
-$('.js-logout').on('click', function(e) {
-  $.cookie('is_login', false);
-  location.href = '.';
+// init ajax
+$.ajaxSetup({
+    error: function(data) {
+        var errMsg = typeof(data === 'string') ? data : data.responseText;
+        alert(data.responseText);
+    }
 })
-alert('a');
+
+checkIsLogin();
+
+function checkIsLogin() {
+    $.ajax({
+        url: BaseUrl + '/users/me',
+        type: 'get',
+        success: function(data) {
+            showIndex(data); 
+        },
+        error: function(data) {
+            showLoginPage();
+        }
+    })
+}
+
+function showIndex(user) {
+    var userInfo = {
+        username: user.u_name
+    }
+    var html_header = template('header', userInfo);
+
+    $('#header').html(html_header);
+
+    getHoodsAndRender();
+
+}
+
+function getHoodsAndRender() {
+    $.ajax({
+        url: BaseUrl + '/hoods',
+        type: 'get',
+        success: function(data) {
+            hoods = data.hoods;
+            var html_hoods = template('hoods', {hoods: hoods});
+            $('#main').html(html_hoods);
+        }
+    })
+}
+
+function showLoginPage() {
+    var html_login = template('login');
+    $('#main').html(html_login);
+}
+
 })();

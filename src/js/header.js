@@ -1,11 +1,22 @@
 /* global template, MOCKS*/
 (function() {
+
     function setTabActive(index) {
         $('.navbar-nav li').each(function() {
             $(this).removeClass('active');
         });
         $('.navbar-nav li').eq(index).addClass('active');
     }
+    // listen events
+    $('.js-logout').on('click', function(e) {
+        $.ajax({
+            url: BaseUrl + '/session',
+            type: 'delete',
+            success: function(data) {
+                location.href = './index.html';
+            }
+        })
+    })
     $('.js-tab-message').on('click', function(e) {
         var html_messages = template('messages', {
             messages: MOCKS.messages

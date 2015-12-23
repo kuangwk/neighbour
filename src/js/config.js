@@ -1,3 +1,3 @@
 (function() {
-    window.BaseUrl = 'http://example.com/index.php';
+    window.BaseUrl = 'http://localhost/jjl/index.php';
 })();
