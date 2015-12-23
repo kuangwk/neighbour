@@ -35,11 +35,14 @@
         e.preventDefault();
         var formData = getAndCheckSignupData();
         formData && $.ajax({
-            url: '/signup',
+            url: BaseUrl + '/users',
             type: 'post',
             data: formData,
             success: function(data) {
                 setUserLogin(data.user);
+            },
+            error: function(data) {
+                alert('signup error');
             }
         })
         return false;
@@ -55,12 +58,11 @@
     }
 
     function getAndCheckSignupData() {
-        var email = getAndCheckEmail();
-        var nickName = email ? getAdnCheckNickname() : false;
-        var password = nickName ? getAndCheckPassword(true) : false;
-        return (email && nickName && password) ? {
-            email: email,
-            nickName: nickName,
+        // var email = getAndCheckEmail();
+        var userName = getAdnCheckUsername();
+        var password = userName ? getAndCheckPassword(true) : false;
+        return (userName && password) ? {
+            u_name: userName,
             password: password
         } : false;
     }
@@ -81,12 +83,12 @@
         var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(email);
     }
-    function getAdnCheckNickname() {
-        var nick = $('#inputNickname').val();
-        if (!nick) {
-            alert('nick name not empty');
+    function getAdnCheckUsername() {
+        var userName = $('#inputUsername').val();
+        if (!userName) {
+            alert('userName name not empty');
         }
-        return nick ? nick : false;
+        return userName ? userName : false;
     }
 
     function getAndCheckPassword(hasConfirm) {
@@ -107,7 +109,7 @@
 
     function setUserLogin(user) {
         $.cookie('is_login', true);
-        $.cookie('nick_name', user.nick_name);
+        $.cookie('user_name', user.user_name);
         $.cookie('email', user.email);
         location.href = '.';
     }

@@ -25,5 +25,5 @@ $('.js-logout').on('click', function(e) {
   $.cookie('is_login', false);
   location.href = '.';
 })
-
+alert('a');
 })();
