@@ -29,24 +29,9 @@ function showIndex(user) {
         username: user.u_name
     }
     var html_header = template('header', userInfo);
-
     $('#header').html(html_header);
-
-    getHoodsAndRender();
-
 }
 
-function getHoodsAndRender() {
-    $.ajax({
-        url: BaseUrl + '/hoods',
-        type: 'get',
-        success: function(data) {
-            hoods = data.hoods;
-            var html_hoods = template('hoods', {hoods: hoods});
-            $('#main').html(html_hoods);
-        }
-    })
-}
 
 function showLoginPage() {
     var html_login = template('login');

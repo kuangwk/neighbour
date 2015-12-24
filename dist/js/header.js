@@ -1,41 +1,106 @@
 /* global template, MOCKS*/
 (function() {
 
-    function setTabActive(index) {
-        $('.navbar-nav li').each(function() {
-            $(this).removeClass('active');
-        });
-        $('.navbar-nav li').eq(index).addClass('active');
+getHashAndRenderBody();
+function getHashAndRenderBody(){
+    var hash = location.hash; 
+    console.log('header', hash);
+    var map = {
+        '#hoods': renderHoods,
+        '#messages': renderMessages,
+        '#post': renderPost,
+        'friends': renderFriends
     }
-    // listen events
-    $('.js-logout').on('click', function(e) {
-        $.ajax({
-            url: BaseUrl + '/session',
-            type: 'delete',
-            success: function(data) {
-                location.href = './index.html';
-            }
-        })
+    map[hash] ? map[hash]() : renderHoods();
+}
+
+// listen events
+$('.js-logout').on('click', function(e) {
+    $.ajax({
+        url: BaseUrl + '/session',
+        type: 'delete',
+        success: function(data) {
+            location.href = './index.html';
+        }
     })
-    $('.js-tab-message').on('click', function(e) {
-        var html_messages = template('messages', {
-            messages: MOCKS.messages
-        });
-        $('#main').html(html_messages);
-        setTabActive(1);
+});
+
+$('.js-tab-hoods').on('click', function(e) {
+    renderHoods();
+});
+$('.js-tab-messages').on('click', function(e) {
+    renderMessages();
+});
+$('.js-tab-post').on('click', function(e) {
+    renderPost();
+});
+$('.js-tab-friends').on('click', function(e) {
+    renderFriends();
+});
+
+function setTabActive(index) {
+    $('.navbar-nav li').each(function() {
+        $(this).removeClass('active');
     });
-    $('.js-post').on('click', function(e) {
-        var html_post = template('post');
-        $('#main').html(html_post);
-        setTabActive(2);
+    $('.navbar-nav li').eq(index).addClass('active');
+}
+
+function renderHoods() {
+    $.ajax({
+        url: BaseUrl + '/hoods',
+        type: 'get',
+        success: function(data) {
+            hoods = data.hoods;
+            var html_hoods = template('hoods', {hoods: hoods});
+            location.hash = '#hoods';
+            $('#main').html(html_hoods);
+            setTabActive(0);
+        }
+    })
+}
+
+function renderMessages() {
+    var html_messages = template('messages', {
+        messages: MOCKS.messages
     });
-    $('.js-friends').on('click', function(e) {
-        var data = {
-            friends: MOCKS.friends,
-            invitations: MOCKS.invitations
-        };
-        var html_post = template('friends', data);
-        $('#main').html(html_post);
-        setTabActive(3);
-    });
+    $('#main').html(html_messages);
+    location.hash = '#messages';
+    setTabActive(1);
+}
+
+function renderPost() {
+    var html_post = template('post');
+    $('#main').html(html_post);
+    location.hash = '#post';
+    setTabActive(2);
+}
+
+function renderFriends() {
+    $.ajax({
+        url: BaseUrl + '/friends',
+        type: 'get',
+        success: function(data) {
+            var friends = data.friends;
+            getInvitationAndRender(friends);
+        }
+    })
+ } 
+
+function getInvitationAndRender(friends) {
+    $.ajax({
+        url: BaseUrl + '/friend_request',
+        type: 'get',
+        success: function(data) {
+            var invitations = data.requests;
+            var html_post = template('friends', {
+                friends: friends,
+                invitations: invitations
+            });
+            $('#main').html(html_post);
+            location.hash = '#friends';
+            setTabActive(3);
+        }
+    })
+}
+
 })();

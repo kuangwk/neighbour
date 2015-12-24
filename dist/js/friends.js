@@ -4,10 +4,10 @@
         var id = $this.data('id');
         var name = $this.closest('li').find('span').text();
         confirm('Are you sure?') && $.ajax({
-            url: '/delete-friend',
-            type: 'POST',
+            url: BaseUrl + '/friends/' + id,
+            type: 'delete',
             data: {
-                id: id
+                uid: id
             },
             success: function() {
                 $this.closest('li').remove();
@@ -20,12 +20,14 @@
         var $this = $(this);
         var name = $this.closest('form').find('input').val();
         name && $.ajax({
-            url: '/add-friend',
+            url: BaseUrl + '/friend_request',
+            type: 'post',
             data: {
-                name: name
+                u_name: name
             },
             success: function(data) {
-                alert('add friend success');
+                alert('sent friend request success');
+                $this.closest('form').find('input').val('');
             }
         });
         return false;
@@ -35,32 +37,28 @@
         var $this = $(this);
         var id = $this.data('id');
         var name = $this.closest('li').find('span').text();
-        $.ajax({
-            url: '/agree_friend',
-            type: 'POST',
-            data: {
-                id: id
-            },
-            success: function() {
-                $this.closest('li').remove();
-            }
-        });
+        handleFriendInvitation(id, $this, 'accept');
     });
     $('.js-reject').on('click', function(e) {
         var $this = $(this);
         var id = $this.data('id');
         var name = $this.closest('li').find('span').text();
+        handleFriendInvitation(id, $this, 'reject');
+    });
+
+    function handleFriendInvitation(id , $item, action) {
         $.ajax({
-            url: '/reject_friend',
-            type: 'POST',
+            url: BaseUrl + '/friend_request/' + id,
+            type: 'put',
             data: {
-                id: id
+                uid: id,
+                action: action
             },
-            success: function() {
-                $this.closest('li').remove();
+            success: function(data) {
+                $item.closest('li').remove();
             }
         });
-    });
+    }
 
 
 })();

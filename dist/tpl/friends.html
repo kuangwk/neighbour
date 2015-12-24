@@ -2,8 +2,19 @@
 <ul>
 {{each friends}}
   <li class="friend-item">
-    <span data-id="{{$value.id}}">{{$value.name}}</span>
-    <button class='btn btn-xs btn-danger js-remove' data-id="{{$value.id}}">remove</button>
+    <span data-id="{{$value.uid}}">{{$value.u_name}}</span>
+    <button class='btn btn-xs btn-danger js-remove' data-id="{{$value.uid}}">remove</button>
+  </li>
+{{/each}}
+</ul> 
+
+<h2>Invitations</h2>
+<ul>
+{{each invitations}}
+  <li class="invitation-item">
+    <span data-id="{{$value.uid}}">{{$value.u_name}}</span>
+    <button class='btn btn-xs btn-success js-agree' data-id="{{$value.uid}}">agree</button>
+    <button class='btn btn-xs btn-danger js-reject' data-id="{{$value.uid}}">reject</button>
   </li>
 {{/each}}
 </ul> 
@@ -14,14 +25,4 @@
   <button class="btn btn-success btn-block js-add-friend" >add friend</button>
 </form>
 
-<h2>Invitations</h2>
-<ul>
-{{each invitations}}
-  <li class="invitation-item">
-    <span data-id="{{$value.id}}">{{$value.name}}</span>
-    <button class='btn btn-xs btn-success js-agree' data-id="{{$value.id}}">agree</button>
-    <button class='btn btn-xs btn-danger js-reject' data-id="{{$value.id}}">reject</button>
-  </li>
-{{/each}}
-</ul> 
 <script src="./js/friends.js"></script>
